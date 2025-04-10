@@ -1,3 +1,5 @@
+# Archivo bst.py (clase BinarySearchTree modificada)
+
 class Node:
     def __init__(self, data: int):
         self.data = data
@@ -5,7 +7,7 @@ class Node:
         self.right_child = None
 
     def __repr__(self):
-        return '({})'.format(self.data)
+        return f'({self.data})'
 
 class BinarySearchTree:
     def __init__(self):
@@ -14,29 +16,31 @@ class BinarySearchTree:
     def insert(self, value: int):
         if self.root is None:
             self.root = Node(value)
-        else:
-            self._insert(value, self.root)
+            return
         
-    def _insert(self, value: int, subtree: Node):
-        if value < subtree.data:
-            if subtree.left_child is None:
-                subtree.left_child = Node(value)
+        current = self.root
+        while True:
+            if value < current.data:
+                if current.left_child is None:
+                    current.left_child = Node(value)
+                    break
+                else:
+                    current = current.left_child
+            elif value > current.data:
+                if current.right_child is None:
+                    current.right_child = Node(value)
+                    break
+                else:
+                    current = current.right_child
             else:
-                self._insert(value, subtree.left_child)
-        elif value > subtree.data:
-            if subtree.right_child is None:
-                subtree.right_child = Node(value)
-            else:
-                self._insert(value, subtree.right_child)
-        else:
-            print('Value already exists in tree...')
-
+                print("Valor duplicado, omitiendo...")
+                break
     def print_pretty(self):
         if self.root is not None:
             lines, *_ = self._build_tree_string(self.root)
             print("\n" + "\n".join(line.rstrip() for line in lines))
         else:
-            print("\nEmpty tree...")
+            print("\nÁrbol vacío...")
 
     def _build_tree_string(self, node: Node):
         if node.right_child is None and node.left_child is None:
@@ -96,7 +100,7 @@ class BinarySearchTree:
         elif value > node.data:
             node.right_child = self._delete(value, node.right_child)
         else:
-  
+            # Caso de eliminación
             if node.left_child is None and node.right_child is None:
                 return None
 
@@ -105,6 +109,7 @@ class BinarySearchTree:
             if node.right_child is None:
                 return node.left_child
 
+            # Encontrar el sucesor
             successor = self.find_min(node.right_child)
             node.data = successor.data
             node.right_child = self._delete(successor.data, node.right_child)
@@ -122,3 +127,4 @@ class BinarySearchTree:
             return self._search(value, node.left_child)
 
         return self._search(value, node.right_child)
+
